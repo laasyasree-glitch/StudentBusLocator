@@ -5,8 +5,6 @@ const path = require("path");
 const { open } = require("sqlite");
 const sqlite3 = require("sqlite3");
 const jwt = require("jsonwebtoken");
-const serverless = require("serverless-http");
-const router = express.Router();
 
 //Utilities
 const app = express();
@@ -58,7 +56,7 @@ const authenticationToken = (req, res, next) => {
 };
 
 //Login API
-router.post("/login/", async (req, res) => {
+app.post("/login/", async (req, res) => {
   const { user_name, password } = req.body;
   const selectQuery = `
     SELECT * FROM user WHERE user_name='${user_name}';
@@ -79,7 +77,7 @@ router.post("/login/", async (req, res) => {
 });
 
 //Get Specific User
-router.get("/user/:user_id", authenticationToken, async (req, res) => {
+app.get("/user/:user_id", authenticationToken, async (req, res) => {
   const { user_id } = req.params;
 
   const getQuery = `
@@ -93,7 +91,7 @@ router.get("/user/:user_id", authenticationToken, async (req, res) => {
 });
 
 //Get all users
-router.get("/users/", authenticationToken, async (req, res) => {
+app.get("/users/", authenticationToken, async (req, res) => {
   const getQuery = `
        select * from user
     `;
@@ -105,7 +103,7 @@ router.get("/users/", authenticationToken, async (req, res) => {
 });
 
 //Add new user
-router.post("/users/", async (request, response) => {
+app.post("/users/", async (request, response) => {
   const {
     username,
     password,
@@ -141,7 +139,7 @@ router.post("/users/", async (request, response) => {
 });
 
 //Update user details
-router.put(
+app.put(
   "/users/:user_id/phone_number",
   authenticationToken,
   async (req, res) => {
@@ -169,36 +167,32 @@ router.put(
   }
 );
 
-router.put(
-  "/users/:user_id/email_id",
-  authenticationToken,
-  async (req, res) => {
-    const { user_id } = req.params; // Extract user_id from request parameters
-    const { email_id } = req.body;
+app.put("/users/:user_id/email_id", authenticationToken, async (req, res) => {
+  const { user_id } = req.params; // Extract user_id from request parameters
+  const { email_id } = req.body;
 
-    try {
-      // Check if the user exists
-      const selectUserQuery = `SELECT * FROM user WHERE user_id = ?`;
-      const dbUser = await db.get(selectUserQuery, [user_id]);
+  try {
+    // Check if the user exists
+    const selectUserQuery = `SELECT * FROM user WHERE user_id = ?`;
+    const dbUser = await db.get(selectUserQuery, [user_id]);
 
-      if (!dbUser) {
-        res.status(400).send("User doesn't exist");
-      } else {
-        // Update the email_id
-        const updateUserQuery = `UPDATE user SET email_id = ? WHERE user_id = ?`;
-        await db.run(updateUserQuery, [email_id, user_id]);
+    if (!dbUser) {
+      res.status(400).send("User doesn't exist");
+    } else {
+      // Update the email_id
+      const updateUserQuery = `UPDATE user SET email_id = ? WHERE user_id = ?`;
+      await db.run(updateUserQuery, [email_id, user_id]);
 
-        res.send(`Email ID updated`);
-      }
-    } catch (error) {
-      console.error(error);
-      res.status(500).send("Internal Server Error");
+      res.send(`Email ID updated`);
     }
+  } catch (error) {
+    console.error(error);
+    res.status(500).send("Internal Server Error");
   }
-);
+});
 
 //Update default bus ID
-router.put(
+app.put(
   "/users/:user_id/default_bus_id",
   authenticationToken,
   async (req, res) => {
@@ -227,7 +221,7 @@ router.put(
 );
 
 //Update My_Stop
-router.put("/users/:user_id/my_stop", authenticationToken, async (req, res) => {
+app.put("/users/:user_id/my_stop", authenticationToken, async (req, res) => {
   const { user_id } = req.params; // Extract user_id from request parameters
   const { my_stop } = req.body;
 
@@ -252,7 +246,7 @@ router.put("/users/:user_id/my_stop", authenticationToken, async (req, res) => {
 });
 
 // Delete User
-router.delete("/users/:user_id", authenticationToken, async (req, res) => {
+app.delete("/users/:user_id", authenticationToken, async (req, res) => {
   const { user_id } = req.params;
 
   try {
@@ -276,7 +270,7 @@ router.delete("/users/:user_id", authenticationToken, async (req, res) => {
 });
 
 //Get Specific driver details
-router.get("/driver/:driver_id", authenticationToken, async (req, res) => {
+app.get("/driver/:driver_id", authenticationToken, async (req, res) => {
   const { driver_id } = req.params;
 
   const getQuery = `
@@ -290,7 +284,7 @@ router.get("/driver/:driver_id", authenticationToken, async (req, res) => {
 });
 
 //Get drivers list
-router.get("/drivers/", authenticationToken, async (req, res) => {
+app.get("/drivers/", authenticationToken, async (req, res) => {
   const getQuery = `
        select * from driver
     `;
@@ -302,7 +296,7 @@ router.get("/drivers/", authenticationToken, async (req, res) => {
 });
 
 //Add new driver
-router.post("/driver/", async (request, response) => {
+app.post("/driver/", async (request, response) => {
   const { driver_name, phone_number, location, bus_id } = request.body;
   const selectUserQuery = `SELECT * FROM driver WHERE driver_name = '${driver_name}'`;
   const dbUser = await db.get(selectUserQuery);
@@ -329,7 +323,7 @@ router.post("/driver/", async (request, response) => {
 });
 
 //Update driver phone number
-router.put(
+app.put(
   "/users/:user_id/phone_number",
   authenticationToken,
   async (req, res) => {
@@ -358,36 +352,32 @@ router.put(
 );
 
 //Update driver location
-router.put(
-  "/users/:user_id/location",
-  authenticationToken,
-  async (req, res) => {
-    const { driver_id } = req.params; // Extract user_id from request parameters
-    const { phone_number } = req.body;
+app.put("/users/:user_id/location", authenticationToken, async (req, res) => {
+  const { driver_id } = req.params; // Extract user_id from request parameters
+  const { phone_number } = req.body;
 
-    try {
-      // Check if the user exists
-      const selectUserQuery = `SELECT * FROM driver WHERE driver_id = ?`;
-      const dbUser = await db.get(selectUserQuery, [driver_id]);
+  try {
+    // Check if the user exists
+    const selectUserQuery = `SELECT * FROM driver WHERE driver_id = ?`;
+    const dbUser = await db.get(selectUserQuery, [driver_id]);
 
-      if (!dbUser) {
-        res.status(400).send("Driver doesn't exist");
-      } else {
-        // Update the phone number
-        const updateUserQuery = `UPDATE driver SET location = ? WHERE driver_id = ?`;
-        await db.run(updateUserQuery, [location, driver_id]);
+    if (!dbUser) {
+      res.status(400).send("Driver doesn't exist");
+    } else {
+      // Update the phone number
+      const updateUserQuery = `UPDATE driver SET location = ? WHERE driver_id = ?`;
+      await db.run(updateUserQuery, [location, driver_id]);
 
-        res.send(`Location is updated`);
-      }
-    } catch (error) {
-      console.error(error);
-      res.status(500).send("Internal Server Error");
+      res.send(`Location is updated`);
     }
+  } catch (error) {
+    console.error(error);
+    res.status(500).send("Internal Server Error");
   }
-);
+});
 
 // Delete Driver
-router.delete("/drivers/:driver_id", authenticationToken, async (req, res) => {
+app.delete("/drivers/:driver_id", authenticationToken, async (req, res) => {
   const { driver_id } = req.params;
 
   try {
@@ -411,7 +401,7 @@ router.delete("/drivers/:driver_id", authenticationToken, async (req, res) => {
 });
 
 //Get Specific Bus details
-router.get("/bus/:bus_id", authenticationToken, async (req, res) => {
+app.get("/bus/:bus_id", authenticationToken, async (req, res) => {
   const { bus_id } = req.params;
 
   const getQuery = `
@@ -425,7 +415,7 @@ router.get("/bus/:bus_id", authenticationToken, async (req, res) => {
 });
 
 //Get Buses list
-router.get("/buses/", authenticationToken, async (req, res) => {
+app.get("/buses/", authenticationToken, async (req, res) => {
   const getQuery = `
        select * from bus
     `;
@@ -437,7 +427,7 @@ router.get("/buses/", authenticationToken, async (req, res) => {
 });
 
 //Add new Bus
-router.post("/bus/", async (request, response) => {
+app.post("/bus/", async (request, response) => {
   const { bus_number, number_plate } = request.body;
   const selectUserQuery = `SELECT * FROM driver WHERE bus_number = '${bus_number}'`;
   const dbUser = await db.get(selectUserQuery);
@@ -462,7 +452,7 @@ router.post("/bus/", async (request, response) => {
 });
 
 //Update bus number
-router.put("/bus/:bus_id/bus_number", authenticationToken, async (req, res) => {
+app.put("/bus/:bus_id/bus_number", authenticationToken, async (req, res) => {
   const { bus_id } = req.params; // Extract user_id from request parameters
   const { bus_number } = req.body;
 
@@ -487,7 +477,7 @@ router.put("/bus/:bus_id/bus_number", authenticationToken, async (req, res) => {
 });
 
 // Delete Bus
-router.delete("/buses/:bus_id", authenticationToken, async (req, res) => {
+app.delete("/buses/:bus_id", authenticationToken, async (req, res) => {
   const { bus_id } = req.params;
 
   try {
@@ -511,7 +501,7 @@ router.delete("/buses/:bus_id", authenticationToken, async (req, res) => {
 });
 
 //Get Bus Stop Co-ordinates and Bus Stop Name using bus route
-router.get("/busStops/:route_number", authenticationToken, async (req, res) => {
+app.get("/busStops/:route_number", authenticationToken, async (req, res) => {
   const { route_number } = req.params;
   const getQuery = `select Coordinates, stop_name from bus_stops where route_number=${route_number}`;
 
@@ -553,5 +543,3 @@ router.get("/busStops/:route_number", authenticationToken, async (req, res) => {
 // });
 
 module.exports = app;
-app.use("/.netlify/functions/api", router);
-module.exports.handler = serverless(app);
