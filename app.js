@@ -5,6 +5,8 @@ const path = require("path");
 const { open } = require("sqlite");
 const sqlite3 = require("sqlite3");
 const jwt = require("jsonwebtoken");
+const serverless = require("serverless-http");
+const app = express();
 
 //Utilities
 const app = express();
@@ -542,3 +544,5 @@ app.get("/busStops/:route_number", authenticationToken, async (req, res) => {
 // });
 
 module.exports = app;
+app.use("/.netlify/functions/api", router);
+module.exports.handler = serverless(app);
