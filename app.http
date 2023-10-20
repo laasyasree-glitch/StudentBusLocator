@@ -1,0 +1,44 @@
+post http://localhost:3020/login
+Content-Type: application/json
+
+{
+  "user_name": "Laasya",
+  "password":"lassya@2002"
+}
+
+###
+get http://localhost:3020/user/1
+Authorization: bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VyX25hbWUiOiJMYWFzeWEiLCJpYXQiOjE2OTM4Mzg4MzZ9.qK97GLP1hZ8ULNq_5LXFCMwAVGrzoOzVJRZwLRV-JKk
+
+###
+get http://localhost:3020/driver/1
+Authorization: bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VyX25hbWUiOiJMYWFzeWEiLCJpYXQiOjE2OTM4Mzg4MzZ9.qK97GLP1hZ8ULNq_5LXFCMwAVGrzoOzVJRZwLRV-JKk
+
+###
+get http://localhost:3020/drivers/
+Authorization: bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VyX25hbWUiOiJMYWFzeWEiLCJpYXQiOjE2OTM4Mzg4MzZ9.qK97GLP1hZ8ULNq_5LXFCMwAVGrzoOzVJRZwLRV-JKk
+
+###
+get http://localhost:3020/users/
+Authorization: bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VyX25hbWUiOiJMYWFzeWEiLCJpYXQiOjE2OTM4Mzg4MzZ9.qK97GLP1hZ8ULNq_5LXFCMwAVGrzoOzVJRZwLRV-JKk
+
+###
+put   http://localhost:3020/users/1/phone_number
+Authorization: bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VyX25hbWUiOiJMYWFzeWEiLCJpYXQiOjE2OTUzMTc3NDd9.8uHH9hpexns1wnYOorTmyKegfDn7TpNHMLnoka1mDwg
+Content-Type: application/json
+
+{
+ "phone_number":"9876543210"
+}
+
+###
+get  http://localhost:3020/busStops/16
+Authorization: bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VyX25hbWUiOiJMYWFzeWEiLCJpYXQiOjE2OTcxNzA0MjN9.q0F7XN8V9k4pkuQD764MW7Pmp3HumkqBwQc99JX38wA
+
+post http://localhost:3020/driver/1/location
+Content-Type: application/json
+
+{
+  "user_name": "Laasya",
+  "password":"lassya@2002"
+}
