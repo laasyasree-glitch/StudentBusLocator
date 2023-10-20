@@ -10,13 +10,17 @@
   },
   "dependencies": {
     "date-fns": "2.19.0",
-    "jsonwebtoken": "^9.0.2",
-    "nodemon": "2.0.7",
-    "sqlite": "4.0.19",
-    "sqlite3": "5.0.2",
     "express": "4.17.1",
+    "jsonwebtoken": "^9.0.2",
     "netlify-cli": "^12.7.2",
     "netlify-lambda": "^2.0.15",
-    "serverless-http": "^2.7.0"
+    "nodemon": "2.0.7",
+    "serverless-http": "^2.7.0",
+    "sqlite": "4.0.19",
+    "sqlite3": "5.0.2"
+  },
+  "devDependencies": {
+    "@webpack-cli/generators": "^3.0.7",
+    "webpack-cli": "^5.1.4"
   }
 }
