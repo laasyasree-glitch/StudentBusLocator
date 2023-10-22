@@ -72,7 +72,7 @@ app.post("/login/", async (req, res) => {
     };
     const jwtToken = jwt.sign(payload, "MY_SECRET_TOKEN");
     res.setHeader("Content-Type", "application/json");
-    res.send({ jwtToken });
+    res.send({ jwtToken, dbUser });
   }
 });
 
