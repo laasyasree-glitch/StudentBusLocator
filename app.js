@@ -505,7 +505,7 @@ app.get("/busStops/:route_number", authenticationToken, async (req, res) => {
   const { route_number } = req.params;
   const getQuery = `select Coordinates, stop_name from bus_stops where route_number=${route_number}`;
 
-  const result = await db.get(getQuery);
+  const result = await db.all(getQuery);
   const obj = result;
 
   res.send(obj);

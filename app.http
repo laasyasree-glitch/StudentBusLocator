@@ -32,9 +32,10 @@ Content-Type: application/json
 }
 
 ###
-get  http://localhost:3020/busStops/16
+get  http://localhost:3020/busStops/18
 Authorization: bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VyX25hbWUiOiJMYWFzeWEiLCJpYXQiOjE2OTcxNzA0MjN9.q0F7XN8V9k4pkuQD764MW7Pmp3HumkqBwQc99JX38wA
 
+###
 post http://localhost:3020/driver/1/location
 Content-Type: application/json
 
