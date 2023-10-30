@@ -43,3 +43,11 @@ Content-Type: application/json
   "user_name": "Laasya",
   "password":"lassya@2002"
 }
+
+###
+GET http://localhost:3020/driver/busID/6
+Authorization: bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VyX25hbWUiOiJMYWFzeWEiLCJpYXQiOjE2OTg2NjU5OTN9.xd_T4ukFsS-2arTV9sRjvpB9JD_NzNa4R6dd9PkQaL0
+
+###
+get http://localhost:3020/buses
+Authorization: bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VyX25hbWUiOiJMYWFzeWEiLCJpYXQiOjE2OTg2NjU5OTN9.xd_T4ukFsS-2arTV9sRjvpB9JD_NzNa4R6dd9PkQaL0

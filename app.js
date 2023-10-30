@@ -511,6 +511,16 @@ app.get("/busStops/:route_number", authenticationToken, async (req, res) => {
   res.send(obj);
 });
 
+// Get driver_id w.r.t bus_id
+app.get("/driver/busId/:bus_id", authenticationToken, async (req, res) => {
+  const { bus_id } = req.params;
+  const getQuery = `select driver_id from bus where bus_id=${bus_id}`;
+
+  const result = await db.get(getQuery);
+  const obj = result;
+
+  res.send(obj);
+});
 // const nodemailer = require("nodemailer");
 
 // // Create a transporter for sending emails (you need to configure this)
