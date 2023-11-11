@@ -1,4 +1,5 @@
 //Import Statements
+const { v4: uuidv4 } = require("uuid");
 const bcrypt = require("bcrypt");
 const express = require("express");
 const path = require("path");
@@ -24,7 +25,6 @@ const initializeAndSetUpDatabase = async () => {
     app.listen(3020, () =>
       console.log("Local Host Server started at port 3020")
     );
-    await convertPasswordsToHash();
   } catch (e) {
     console.log(e.message);
     process.exit(1);
@@ -32,30 +32,6 @@ const initializeAndSetUpDatabase = async () => {
 };
 
 initializeAndSetUpDatabase();
-
-const convertPasswordsToHash = async () => {
-  try {
-    const selectQuery = `
-    SELECT user_id, password FROM user;
-    `;
-    const userRecords = await db.all(selectQuery);
-    for (const userRecord of userRecords) {
-      const { user_id, PASSWORD } = userRecord;
-      if (PASSWORD) {
-        // Check if the password is not null or empty
-        const hashedPassword = await bcrypt.hash(PASSWORD, 10); // Hash the password
-        // Update the database with the hashed password
-        await db.run("UPDATE user SET password = ? WHERE user_id = ?", [
-          hashedPassword,
-          user_id,
-        ]);
-      }
-    }
-    console.log("Password conversion complete.");
-  } catch (error) {
-    console.error("Error converting passwords:", error);
-  }
-};
 
 //Authentication(middleware) using JWT token
 const authenticationToken = (req, res, next) => {
@@ -82,24 +58,24 @@ const authenticationToken = (req, res, next) => {
 
 //User Login API
 app.post("/login/", async (req, res) => {
-  const { user_name, PASSWORD } = req.body;
+  const { user_name, password } = req.body;
   const selectQuery = `
     SELECT * FROM user WHERE user_name='${user_name}';
   `;
   const dbUser = await db.get(selectQuery);
-
+  console.log(dbUser);
   if (dbUser === undefined) {
     res.status(400);
     res.send("Invalid user");
   } else {
     const hashedPassword = dbUser.PASSWORD;
-    console.log("Hashed Password from DB:", hashedPassword);
-    const x = await bcrypt.hash(PASSWORD, 10);
-    console.log("Password to Compare:", PASSWORD, x);
+    console.log("Hashed password from DB:", hashedPassword);
+    const x = await bcrypt.hash(password, 10);
+    console.log("password to Compare:", password, x);
 
-    const isPasswordMatched = await bcrypt.compare(PASSWORD, hashedPassword);
-    console.log(isPasswordMatched);
-    if (isPasswordMatched === true) {
+    const ispasswordMatched = await bcrypt.compare(password, hashedPassword);
+    console.log(ispasswordMatched);
+    if (ispasswordMatched === true) {
       const payload = {
         user_name: user_name,
       };
@@ -108,7 +84,7 @@ app.post("/login/", async (req, res) => {
       res.send({ jwtToken, dbUser });
     } else {
       res.status(400);
-      res.send("Invalid Password");
+      res.send("Invalid password");
     }
   }
 });
@@ -117,7 +93,7 @@ app.post("/login/", async (req, res) => {
 // app.post("/driver/login/", async (req, res) => {
 //   const { user_name, password } = req.body;
 //   const selectQuery = `
-//     SELECT * FROM driver WHERE username='${user_name}';
+//     SELECT * FROM driver WHERE user_name='${user_name}';
 //     `;
 //   const dbUser = await db.get(selectQuery);
 //   console.log(dbUser);
@@ -126,7 +102,7 @@ app.post("/login/", async (req, res) => {
 //     res.send("Invalid user");
 //   } else {
 //     const payload = {
-//       username: user_name,
+//       user_name: user_name,
 //     };
 //     const jwtToken = jwt.sign(payload, "MY_SECRET_TOKEN");
 //     res.setHeader("Content-Type", "application/json");
@@ -163,7 +139,7 @@ app.get("/users/", authenticationToken, async (req, res) => {
 //Add new user
 app.post("/users/", async (request, response) => {
   const {
-    username,
+    user_name,
     password,
     phone_number,
     email_id,
@@ -171,16 +147,19 @@ app.post("/users/", async (request, response) => {
     default_bus_id,
     my_stop,
   } = request.body;
+  //const user_id = Math.floor(Math.random() * 1000000);
+  const new_user_id = uuidv4();
   const hashedPassword = await bcrypt.hash(password, 10);
   const selectUserQuery = `SELECT * FROM user WHERE user_name = '${user_name}'`;
   const dbUser = await db.get(selectUserQuery);
   if (dbUser === undefined) {
     const createUserQuery = `
       INSERT INTO 
-        user (username, password, phone_number,email_id,organization_id,default_bus_id,my_stop) 
+        user (user_id,user_name, password, phone_number,email_id,organization_id,default_bus_id,my_stop) 
       VALUES 
         (
-          '${username}', 
+            '${new_user_id}',
+          '${user_name}', 
           '${hashedPassword}',
           '${phone_number}', 
           '${email_id}',
@@ -189,8 +168,7 @@ app.post("/users/", async (request, response) => {
           '${my_stop}'
         )`;
     const dbResponse = await db.run(createUserQuery);
-    const newUserId = dbResponse.lastID;
-    response.send(`Created new user with ${newUserId}`);
+    response.send(`Created new user with ${new_user_id}`);
   } else {
     response.status = 400;
     response.send("User already exists");

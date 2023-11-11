@@ -7,6 +7,7 @@ dependencies:
   nodemon: 2.0.7
   sqlite: 4.0.19
   sqlite3: 5.0.2
+  uuid: 9.0.1
 lockfileVersion: 5.2
 packages:
   /@mapbox/node-pre-gyp/1.0.11:
@@ -2182,6 +2183,11 @@ packages:
     optional: true
     resolution:
       integrity: sha512-HjSDRw6gZE5JMggctHBcjVak08+KEVhSIiDzFnT9S9aegmp85S/bReBVTb4QTFaRNptJ9kuYaNhnbNEOkbKb/A==
+  /uuid/9.0.1:
+    dev: false
+    hasBin: true
+    resolution:
+      integrity: sha512-b+1eJOlsR9K8HJpow9Ok3fiWOWSIcIzXodvv0rQjVoOVNpWMpxf1wZNpt4y9h10odCNrqnYp1OBzRktckBe3sA==
   /vary/1.1.2:
     dev: false
     engines:
@@ -2268,3 +2274,4 @@ specifiers:
   nodemon: 2.0.7
   sqlite: 4.0.19
   sqlite3: 5.0.2
+  uuid: ^9.0.1
