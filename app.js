@@ -69,9 +69,9 @@ app.post("/login/", async (req, res) => {
     res.send("Invalid user");
   } else {
     const hashedPassword = dbUser.PASSWORD;
-    console.log("Hashed password from DB:", hashedPassword);
+    // console.log("Hashed password from DB:", hashedPassword);
     const x = await bcrypt.hash(password, 10);
-    console.log("password to Compare:", password, x);
+    // console.log("password to Compare:", password, x);
 
     const ispasswordMatched = await bcrypt.compare(password, hashedPassword);
     console.log(ispasswordMatched);
@@ -90,50 +90,31 @@ app.post("/login/", async (req, res) => {
 });
 
 //Driver Login API
-// app.post("/driver/login/", async (req, res) => {
-//   const { user_name, password } = req.body;
-//   const selectQuery = `
-//     SELECT * FROM driver WHERE user_name='${user_name}';
-//     `;
-//   const dbUser = await db.get(selectQuery);
-//   console.log(dbUser);
-//   if (dbUser === undefined) {
-//     res.status(400);
-//     res.send("Invalid user");
-//   } else {
-//     const payload = {
-//       user_name: user_name,
-//     };
-//     const jwtToken = jwt.sign(payload, "MY_SECRET_TOKEN");
-//     res.setHeader("Content-Type", "application/json");
-//     res.send({ jwtToken, dbUser });
-//   }
-// });
-
-//Get Specific User
-app.get("/user/:user_id", authenticationToken, async (req, res) => {
-  const { user_id } = req.params;
-
-  const getQuery = `
-       select * from USER where user_id=${user_id}
-    `;
-
-  const result = await db.get(getQuery);
-  const obj = { susses: true, data: result };
-
-  res.send(obj);
-});
-
-//Get all users
-app.get("/users/", authenticationToken, async (req, res) => {
-  const getQuery = `
-       select * from user
-    `;
-
-  const result = await db.all(getQuery);
-  const obj = { susses: true, data: result };
-
-  res.send(obj);
+app.post("/driver/login/", async (req, res) => {
+  const { username, password } = req.body;
+  const selectQuery = `
+    SELECT * FROM driver WHERE username='${username}';
+  `;
+  const dbUser = await db.get(selectQuery);
+  if (dbUser === undefined) {
+    res.status(400);
+    res.send("Invalid driver login");
+  } else {
+    const hashedPassword = dbUser.password;
+    const x = await bcrypt.hash(password, 10);
+    const isPasswordMatched = await bcrypt.compare(password, hashedPassword);
+    if (isPasswordMatched === true) {
+      const payload = {
+        username: username,
+      };
+      const jwtToken = jwt.sign(payload, "MY_SECRET_TOKEN");
+      res.setHeader("Content-Type", "application/json");
+      res.send({ jwtToken, dbUser });
+    } else {
+      res.status(400);
+      res.send("Invalid password");
+    }
+  }
 });
 
 //Add new user
@@ -147,7 +128,6 @@ app.post("/users/", async (request, response) => {
     default_bus_id,
     my_stop,
   } = request.body;
-  //const user_id = Math.floor(Math.random() * 1000000);
   const new_user_id = uuidv4();
   const hashedPassword = await bcrypt.hash(password, 10);
   const selectUserQuery = `SELECT * FROM user WHERE user_name = '${user_name}'`;
@@ -173,6 +153,55 @@ app.post("/users/", async (request, response) => {
     response.status = 400;
     response.send("User already exists");
   }
+});
+
+//Add new driver
+app.post("/driver/", async (request, response) => {
+  const {
+    driver_name,
+    phone_number,
+    location,
+    bus_id,
+    username,
+    password,
+  } = request.body;
+  const new_driver_id = uuidv4();
+  const hashedPassword = await bcrypt.hash(password, 10);
+  const selectUserQuery = `SELECT * FROM driver WHERE username = '${username}'`;
+  const dbUser = await db.get(selectUserQuery);
+  if (dbUser === undefined) {
+    const createUserQuery = `
+     INSERT INTO driver (driver_id, driver_name, phone_number, location, bus_id, username, password) 
+      VALUES 
+        (
+          '${new_driver_id}', 
+          '${driver_name}', 
+          '${phone_number}',
+          '${location}', 
+          '${bus_id}', 
+          '${username}', 
+          '${hashedPassword}'
+        )`;
+    const dbResponse = await db.run(createUserQuery);
+    response.send(`Created new driver user with ${new_driver_id}`);
+  } else {
+    response.status = 400;
+    response.send(
+      "User already exists, if you want to update driver details click on update"
+    );
+  }
+});
+
+//Get all users
+app.get("/users/", authenticationToken, async (req, res) => {
+  const getQuery = `
+       select * from user
+    `;
+
+  const result = await db.all(getQuery);
+  const obj = { susses: true, data: result };
+
+  res.send(obj);
 });
 
 //Update user details
@@ -306,20 +335,6 @@ app.delete("/users/:user_id", authenticationToken, async (req, res) => {
   }
 });
 
-//Get Specific driver details
-app.get("/driver/:driver_id", authenticationToken, async (req, res) => {
-  const { driver_id } = req.params;
-
-  const getQuery = `
-       select * from driver where driver_id=${driver_id}
-    `;
-
-  const result = await db.get(getQuery);
-  const obj = { susses: true, data: result };
-
-  res.send(obj);
-});
-
 //Get drivers list
 app.get("/drivers/", authenticationToken, async (req, res) => {
   const getQuery = `
@@ -330,33 +345,6 @@ app.get("/drivers/", authenticationToken, async (req, res) => {
   const obj = { susses: true, data: result };
 
   res.send(obj);
-});
-
-//Add new driver
-app.post("/driver/", async (request, response) => {
-  const { driver_name, phone_number, location, bus_id } = request.body;
-  const selectUserQuery = `SELECT * FROM driver WHERE driver_name = '${driver_name}'`;
-  const dbUser = await db.get(selectUserQuery);
-  if (dbUser === undefined) {
-    const createUserQuery = `
-      INSERT INTO 
-       driver (driver_name,phone_number,location,bus_id) 
-      VALUES 
-        (
-          '${driver_name}', 
-          '${phone_number}',
-          '${location}', 
-          '${bus_id}'
-        )`;
-    const dbResponse = await db.run(createUserQuery);
-    const newUserId = dbResponse.lastID;
-    response.send(`Created new user with ${newUserId}`);
-  } else {
-    response.status = 400;
-    response.send(
-      "User already exists, if you want to update driver details click on update"
-    );
-  }
 });
 
 //Update driver phone number

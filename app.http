@@ -7,9 +7,31 @@ Content-Type: application/json
   "password":"chandhana@2003",
   "phone_number":"1564587809",
   "email_id":"chandhana@gmail.com",
-  "organisation_id":"1",
+  "organization_id":"1",
   "default_bus_id":"4",
   "my_stop":"21"
+}
+
+###
+post http://localhost:3020/driver/
+Content-Type: application/json
+
+{
+    "driver_name": "driver_16",
+    "phone_number": "1111111111",
+    "location": "p",
+    "bus_id": 18,
+    "username": "user16",
+    "password": "password16"
+  }
+
+###
+post http://localhost:3020/driver/login
+Content-Type: application/json
+
+{
+  "username": "user16",
+  "password":"password16"
 }
 
 ###
@@ -29,14 +51,6 @@ Content-Type: application/json
   "user_name": "user1",
   "password":"password1"
 }
-
-###
-get http://localhost:3020/user/1
-Authorization: bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VyX25hbWUiOiJjaGFuZGhhbmEiLCJpYXQiOjE2OTk3MDY0MDl9.JnbPlsCWJsFKLqONpQrrPcgweA4opUGOWmSKKvwOQVM
-
-###
-get http://localhost:3020/driver/1
-Authorization: bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VyX25hbWUiOiJMYWFzeWEiLCJpYXQiOjE2OTM4Mzg4MzZ9.qK97GLP1hZ8ULNq_5LXFCMwAVGrzoOzVJRZwLRV-JKk
 
 ###
 get http://localhost:3020/drivers/
