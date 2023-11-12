@@ -87,3 +87,7 @@ Authorization: bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VyX25hbWUiOiJMY
 ###
 get http://localhost:3020/buses
 Authorization: bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VyX25hbWUiOiJMYWFzeWEiLCJpYXQiOjE2OTg2NjU5OTN9.xd_T4ukFsS-2arTV9sRjvpB9JD_NzNa4R6dd9PkQaL0
+
+###
+post http://localhost:3020/msg
+Authorization: bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VyX25hbWUiOiJjaGFuZGhhbmEiLCJpYXQiOjE2OTk4MDM0ODB9.pXoFhAKE8OLIlh1sVgh3pOod6hKSocC49PEZw1VYBb8

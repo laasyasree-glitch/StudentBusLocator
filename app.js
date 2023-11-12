@@ -546,35 +546,26 @@ app.get("/driver/busId/:bus_id", authenticationToken, async (req, res) => {
 
   res.send(obj);
 });
-// const nodemailer = require("nodemailer");
 
-// // Create a transporter for sending emails (you need to configure this)
-// const transporter = nodemailer.createTransport({
-//   service: "YourEmailService",
-//   auth: {
-//     user: "your_email@example.com",
-//     pass: "your_email_password",
-//   },
-// });
+const twilio = require("twilio");
 
-// // Send an email notification
-// app.post("/send-notification", authenticationToken, async (req, res) => {
-//   const { recipientEmail, subject, message } = req.body;
+const accountSid = "ACcdf4b88477757704702eae17315fe68e";
+const authToken = "22924e63271ed6f0a682b856a50f5444";
+const fromPhoneNumber = "+14155238886";
+const toPhoneNumber = "+919703623232";
 
-//   try {
-//     // Send the email
-//     await transporter.sendMail({
-//       from: "your_email@example.com",
-//       to: recipientEmail,
-//       subject: subject,
-//       text: message,
-//     });
+const client = twilio(accountSid, authToken);
 
-//     res.send("Notification sent successfully");
-//   } catch (error) {
-//     console.error(error);
-//     res.status(500).send("Failed to send notification");
-//   }
-// });
+// Send SMS
+app.post("/msg", authenticationToken, async (req, res) => {
+  client.messages
+    .create({
+      body: "Hello, this is a test message from Twilio!",
+      from: "whatsapp:+14155238886",
+      to: "whatsapp:+919703623232",
+    })
+    .then((message) => res.send(`Message sent with SID: ${message.sid}`))
+    .catch((error) => res.send(`Error sending message: ${error.message}`));
+});
 
 module.exports = app;
