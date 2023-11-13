@@ -39,8 +39,8 @@ post http://localhost:3020/login
 Content-Type: application/json
 
 {
-  "user_name": "chandhana",
-  "password":"chandhana@2003"
+  "user_name": "laasya",
+  "password":"laasya@2003"
 }
 
 ###
@@ -90,4 +90,4 @@ Authorization: bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VyX25hbWUiOiJMY
 
 ###
 post http://localhost:3020/msg
-Authorization: bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VyX25hbWUiOiJjaGFuZGhhbmEiLCJpYXQiOjE2OTk4MDM0ODB9.pXoFhAKE8OLIlh1sVgh3pOod6hKSocC49PEZw1VYBb8
+Authorization: bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VyX2lkIjoxMjQyMjI0MTk2Mzg1MDk5NDAsInVzZXJfbmFtZSI6ImxhYXN5YSIsIlBBU1NXT1JEIjoiJDJiJDEwJDIuc2p0cll5WXdhbVpPaTF2NmxSM2VPdWJuLjVaN1hOaU9KeVc3ajRpbDkxaHVvbzBGS015IiwicGhvbmVfbnVtYmVyIjoiOTcwMzYyMzIzMiIsImVtYWlsX2lkIjoibGFhc3lhQGdtYWlsLmNvbSIsIm9yZ2FuaXphdGlvbl9pZCI6MSwiZGVmYXVsdF9idXNfaWQiOjEsIm15X3N0b3AiOiJHdW50dXIgQnVzIFN0YW5kIiwiaWF0IjoxNjk5ODYwNzMxfQ.Aq6PDftMCDpyRA-kQ-4kCWPZ0DsVqlc2m-i1WE4YtIA

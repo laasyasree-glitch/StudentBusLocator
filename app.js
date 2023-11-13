@@ -50,6 +50,7 @@ const authenticationToken = (req, res, next) => {
         res.send("Invalid JWT Token");
       } else {
         req.user_name = payload.user_name;
+        req.phone_number = payload.phone_number;
         next();
       }
     });
@@ -76,9 +77,7 @@ app.post("/login/", async (req, res) => {
     const ispasswordMatched = await bcrypt.compare(password, hashedPassword);
     console.log(ispasswordMatched);
     if (ispasswordMatched === true) {
-      const payload = {
-        user_name: user_name,
-      };
+      const payload = dbUser;
       const jwtToken = jwt.sign(payload, "MY_SECRET_TOKEN");
       res.setHeader("Content-Type", "application/json");
       res.send({ jwtToken, dbUser });
@@ -165,16 +164,15 @@ app.post("/driver/", async (request, response) => {
     username,
     password,
   } = request.body;
-  const new_driver_id = uuidv4();
+  // const new_driver_id = uuidv4();
   const hashedPassword = await bcrypt.hash(password, 10);
   const selectUserQuery = `SELECT * FROM driver WHERE username = '${username}'`;
   const dbUser = await db.get(selectUserQuery);
   if (dbUser === undefined) {
     const createUserQuery = `
-     INSERT INTO driver (driver_id, driver_name, phone_number, location, bus_id, username, password) 
+     INSERT INTO driver (driver_name, phone_number, location, bus_id, username, password) 
       VALUES 
         (
-          '${new_driver_id}', 
           '${driver_name}', 
           '${phone_number}',
           '${location}', 
@@ -183,12 +181,10 @@ app.post("/driver/", async (request, response) => {
           '${hashedPassword}'
         )`;
     const dbResponse = await db.run(createUserQuery);
-    response.send(`Created new driver user with ${new_driver_id}`);
+    response.send(`New driver has been created successfully`);
   } else {
     response.status = 400;
-    response.send(
-      "User already exists, if you want to update driver details click on update"
-    );
+    response.send("Driver already exists");
   }
 });
 
@@ -550,22 +546,18 @@ app.get("/driver/busId/:bus_id", authenticationToken, async (req, res) => {
 const twilio = require("twilio");
 
 const accountSid = "ACcdf4b88477757704702eae17315fe68e";
-const authToken = "22924e63271ed6f0a682b856a50f5444";
-const fromPhoneNumber = "+14155238886";
-const toPhoneNumber = "+919703623232";
+const authToken = "f704c58bf93efebba93d0540e95728fd";
 
 const client = twilio(accountSid, authToken);
 
-// Send SMS
 app.post("/msg", authenticationToken, async (req, res) => {
   client.messages
     .create({
-      body: "Hello, this is a test message from Twilio!",
+      body: "Hi! Bus Arrived at the previous STOP; Hurry Up! Reach Your Stop",
       from: "whatsapp:+14155238886",
-      to: "whatsapp:+919703623232",
+      to: `whatsapp:+91${req.phone_number}`,
     })
     .then((message) => res.send(`Message sent with SID: ${message.sid}`))
     .catch((error) => res.send(`Error sending message: ${error.message}`));
 });
-
 module.exports = app;
