@@ -372,31 +372,6 @@ app.put(
   }
 );
 
-//Update driver location
-app.put("/users/:user_id/location", authenticationToken, async (req, res) => {
-  const { driver_id } = req.params; // Extract user_id from request parameters
-  const { phone_number } = req.body;
-
-  try {
-    // Check if the user exists
-    const selectUserQuery = `SELECT * FROM driver WHERE driver_id = ?`;
-    const dbUser = await db.get(selectUserQuery, [driver_id]);
-
-    if (!dbUser) {
-      res.status(400).send("Driver doesn't exist");
-    } else {
-      // Update the phone number
-      const updateUserQuery = `UPDATE driver SET location = ? WHERE driver_id = ?`;
-      await db.run(updateUserQuery, [location, driver_id]);
-
-      res.send(`Location is updated`);
-    }
-  } catch (error) {
-    console.error(error);
-    res.status(500).send("Internal Server Error");
-  }
-});
-
 // Delete Driver
 app.delete("/drivers/:driver_id", authenticationToken, async (req, res) => {
   const { driver_id } = req.params;
@@ -567,12 +542,27 @@ app.put(
   async (req, res) => {
     const { driver_id } = req.params;
     const { location } = req.body;
+     try {
+    // Check if the user exists
+    const selectUserQuery = `SELECT * FROM driver WHERE driver_id = ?`;
+    const dbUser = await db.get(selectUserQuery, [driver_id]);
+     if (!dbUser) {
+      res.status(400).send("Driver doesn't exist");
+    }
+    else{
     const updateUserQuery = `UPDATE driver SET location = ? WHERE driver_id = ?`;
     await db.run(updateUserQuery, [location, driver_id]);
 
     res.send("Location is updated");
+    }
   }
+  catch (error) {
+    console.error(error);
+    res.status(500).send("Internal Server Error");
+  }
+}
 );
+
 
 const twilio = require("twilio");
 
