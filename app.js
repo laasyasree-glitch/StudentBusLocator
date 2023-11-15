@@ -543,6 +543,37 @@ app.get("/driver/busId/:bus_id", authenticationToken, async (req, res) => {
   res.send(obj);
 });
 
+// app.put("/driver/:driver_id/longitude", authenticationToken, async (req, res)){
+//     const {driver_id}=req.params;
+//     const {longitude}=req.body;
+//      const updateUserQuery = `UPDATE driver SET longitude = ? WHERE driver_id = ?`;
+//       await db.run(updateUserQuery, [longitude, driver_id]);
+
+//       res.send(`Longitude is updated`);
+// }
+
+// app.put("/driver/:driver_id/latitude", authenticationToken, async (req, res)){
+//     const {driver_id}=req.params;
+//     const {latitude}=req.body;
+//      const updateUserQuery = `UPDATE driver SET latitude = ? WHERE driver_id = ?`;
+//       await db.run(updateUserQuery, [latitude, driver_id]);
+
+//       res.send(`Latitude is updated`);
+// }
+
+app.put(
+  "/driver/:driver_id/location",
+  authenticationToken,
+  async (req, res) => {
+    const { driver_id } = req.params;
+    const { location } = req.body;
+    const updateUserQuery = `UPDATE driver SET location = ? WHERE driver_id = ?`;
+    await db.run(updateUserQuery, [location, driver_id]);
+
+    res.send("Location is updated");
+  }
+);
+
 const twilio = require("twilio");
 
 const accountSid = "ACcdf4b88477757704702eae17315fe68e";
