@@ -518,23 +518,56 @@ app.get("/driver/busId/:bus_id", authenticationToken, async (req, res) => {
   res.send(obj);
 });
 
-// app.put("/driver/:driver_id/longitude", authenticationToken, async (req, res)){
-//     const {driver_id}=req.params;
-//     const {longitude}=req.body;
-//      const updateUserQuery = `UPDATE driver SET longitude = ? WHERE driver_id = ?`;
-//       await db.run(updateUserQuery, [longitude, driver_id]);
+app.put(
+  "/driver/:driver_id/longitude",
+  authenticationToken,
+  async (req, res) => {
+    const { driver_id } = req.params;
 
-//       res.send(`Longitude is updated`);
-// }
+    const { longitude } = req.body;
+    try {
+      // Check if the user exists
+      const selectUserQuery = `SELECT * FROM driver WHERE driver_id = ?`;
+      const dbUser = await db.get(selectUserQuery, [driver_id]);
+      if (!dbUser) {
+        res.status(400).send("Driver doesn't exist");
+      } else {
+        const updateUserQuery = `UPDATE driver SET longitute = ? WHERE driver_id = ?`;
+        await db.run(updateUserQuery, [longitude, driver_id]);
 
-// app.put("/driver/:driver_id/latitude", authenticationToken, async (req, res)){
-//     const {driver_id}=req.params;
-//     const {latitude}=req.body;
-//      const updateUserQuery = `UPDATE driver SET latitude = ? WHERE driver_id = ?`;
-//       await db.run(updateUserQuery, [latitude, driver_id]);
+        res.send(`Longitude is updated`);
+      }
+    } catch (error) {
+      console.error(error);
+      res.status(500).send("Internal Server Error");
+    }
+  }
+);
 
-//       res.send(`Latitude is updated`);
-// }
+app.put(
+  "/driver/:driver_id/latitude",
+  authenticationToken,
+  async (req, res) => {
+    const { driver_id } = req.params;
+    const { latitude } = req.body;
+    try {
+      // Check if the user exists
+      const selectUserQuery = `SELECT * FROM driver WHERE driver_id = ?`;
+      const dbUser = await db.get(selectUserQuery, [driver_id]);
+      if (!dbUser) {
+        res.status(400).send("Driver doesn't exist");
+      } else {
+        const updateUserQuery = `UPDATE driver SET latitute = ? WHERE driver_id = ?`;
+        await db.run(updateUserQuery, [latitude, driver_id]);
+
+        res.send(`Latitude is updated`);
+      }
+    } catch (error) {
+      console.error(error);
+      res.status(500).send("Internal Server Error");
+    }
+  }
+);
 
 app.put(
   "/driver/:driver_id/location",
@@ -542,27 +575,24 @@ app.put(
   async (req, res) => {
     const { driver_id } = req.params;
     const { location } = req.body;
-     try {
-    // Check if the user exists
-    const selectUserQuery = `SELECT * FROM driver WHERE driver_id = ?`;
-    const dbUser = await db.get(selectUserQuery, [driver_id]);
-     if (!dbUser) {
-      res.status(400).send("Driver doesn't exist");
-    }
-    else{
-    const updateUserQuery = `UPDATE driver SET location = ? WHERE driver_id = ?`;
-    await db.run(updateUserQuery, [location, driver_id]);
+    try {
+      // Check if the user exists
+      const selectUserQuery = `SELECT * FROM driver WHERE driver_id = ?`;
+      const dbUser = await db.get(selectUserQuery, [driver_id]);
+      if (!dbUser) {
+        res.status(400).send("Driver doesn't exist");
+      } else {
+        const updateUserQuery = `UPDATE driver SET location = ? WHERE driver_id = ?`;
+        await db.run(updateUserQuery, [location, driver_id]);
 
-    res.send("Location is updated");
+        res.send("Location is updated");
+      }
+    } catch (error) {
+      console.error(error);
+      res.status(500).send("Internal Server Error");
     }
   }
-  catch (error) {
-    console.error(error);
-    res.status(500).send("Internal Server Error");
-  }
-}
 );
-
 
 const twilio = require("twilio");
 
