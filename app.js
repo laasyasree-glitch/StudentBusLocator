@@ -64,7 +64,6 @@ app.post("/login/", async (req, res) => {
     SELECT * FROM user WHERE user_name='${user_name}';
   `;
   const dbUser = await db.get(selectQuery);
-  console.log(dbUser);
   if (dbUser === undefined) {
     res.status(400);
     res.send("Invalid user");
@@ -570,6 +569,18 @@ app.put(
     }
   }
 );
+
+app.get("/user/driver_location", authenticationToken, async (req, res) => {
+  try {
+    const getQuery = `select latitute, longitute from driver`;
+    const result = await db.get(getQuery);
+    const obj = { susses: true, data: result };
+    res.send(obj);
+  } catch (error) {
+    console.error(error);
+    res.status(500).send("Internal Server Error");
+  }
+});
 
 const twilio = require("twilio");
 
