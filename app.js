@@ -518,13 +518,38 @@ app.get("/driver/busId/:bus_id", authenticationToken, async (req, res) => {
   res.send(obj);
 });
 
+// app.put(
+//   "/driver/:driver_id/longitude",
+//   authenticationToken,
+//   async (req, res) => {
+//     const { driver_id } = req.params;
+
+//     const { longitude } = req.body;
+//     try {
+//       // Check if the user exists
+//       const selectUserQuery = `SELECT * FROM driver WHERE driver_id = ?`;
+//       const dbUser = await db.get(selectUserQuery, [driver_id]);
+//       if (!dbUser) {
+//         res.status(400).send("Driver doesn't exist");
+//       } else {
+//         const updateUserQuery = `UPDATE driver SET longitute = ? WHERE driver_id = ?`;
+//         await db.run(updateUserQuery, [longitude, driver_id]);
+
+//         res.send(`Longitude is updated`);
+//       }
+//     } catch (error) {
+//       console.error(error);
+//       res.status(500).send("Internal Server Error");
+//     }
+//   }
+// );
+
 app.put(
-  "/driver/:driver_id/longitude",
+  "/driver/:driver_id/location",
   authenticationToken,
   async (req, res) => {
     const { driver_id } = req.params;
-
-    const { longitude } = req.body;
+    const { longitude, latitude } = req.body;
     try {
       // Check if the user exists
       const selectUserQuery = `SELECT * FROM driver WHERE driver_id = ?`;
@@ -532,35 +557,12 @@ app.put(
       if (!dbUser) {
         res.status(400).send("Driver doesn't exist");
       } else {
-        const updateUserQuery = `UPDATE driver SET longitute = ? WHERE driver_id = ?`;
-        await db.run(updateUserQuery, [longitude, driver_id]);
+        const updateUserQuery1 = `UPDATE driver SET latitute = ? WHERE driver_id = ?`;
+        await db.run(updateUserQuery1, [latitude, driver_id]);
+        const updateUserQuery2 = `UPDATE driver SET longitute = ? WHERE driver_id = ?`;
+        await db.run(updateUserQuery2, [longitude, driver_id]);
 
-        res.send(`Longitude is updated`);
-      }
-    } catch (error) {
-      console.error(error);
-      res.status(500).send("Internal Server Error");
-    }
-  }
-);
-
-app.put(
-  "/driver/:driver_id/latitude",
-  authenticationToken,
-  async (req, res) => {
-    const { driver_id } = req.params;
-    const { latitude } = req.body;
-    try {
-      // Check if the user exists
-      const selectUserQuery = `SELECT * FROM driver WHERE driver_id = ?`;
-      const dbUser = await db.get(selectUserQuery, [driver_id]);
-      if (!dbUser) {
-        res.status(400).send("Driver doesn't exist");
-      } else {
-        const updateUserQuery = `UPDATE driver SET latitute = ? WHERE driver_id = ?`;
-        await db.run(updateUserQuery, [latitude, driver_id]);
-
-        res.send(`Latitude is updated`);
+        res.send(`Co-ordinates is updated`);
       }
     } catch (error) {
       console.error(error);
