@@ -599,4 +599,20 @@ app.post("/msg", authenticationToken, async (req, res) => {
     .then((message) => res.send(`Message sent with SID: ${message.sid}`))
     .catch((error) => res.send(`Error sending message: ${error.message}`));
 });
+
+// Get bus_number with respect to stop_name
+app.get("/bus_names/:stop_name", authenticationToken, async (req, res) => {
+  const { stop_name } = req.params;
+  try {
+    const getQuery = `
+        SELECT bus_number from bus_stops where stop_name='${stop_name}'
+    `;
+    const result = await db.all(getQuery);
+    const obj = { susses: true, data: result };
+    res.send(obj);
+  } catch (error) {
+    console.error(error);
+    res.status(500).send("Internal Server Error");
+  }
+});
 module.exports = app;
