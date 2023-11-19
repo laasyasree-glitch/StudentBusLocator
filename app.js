@@ -570,17 +570,29 @@ app.put(
   }
 );
 
-app.get("/user/driver_location", authenticationToken, async (req, res) => {
-  try {
-    const getQuery = `select latitute, longitute from driver`;
-    const result = await db.get(getQuery);
-    const obj = { susses: true, data: result };
-    res.send(obj);
-  } catch (error) {
-    console.error(error);
-    res.status(500).send("Internal Server Error");
+app.get(
+  "/driver/driver_location/:driver_id",
+  authenticationToken,
+  async (req, res) => {
+    const { driver_id } = req.params;
+    const { longitude, latitude } = req.body;
+    try {
+      const selectUserQuery = `SELECT * FROM driver WHERE driver_id = ?`;
+      const dbUser = await db.get(selectUserQuery, [driver_id]);
+      if (!dbUser) {
+        res.status(400).send("Driver doesn't exist");
+      } else {
+        const getQuery = `select latitute, longitute from driver where driver_id=${driver_id}`;
+        const result = await db.get(getQuery);
+        const obj = { susses: true, data: result };
+        res.send(obj);
+      }
+    } catch (error) {
+      console.error(error);
+      res.status(500).send("Internal Server Error");
+    }
   }
-});
+);
 
 const twilio = require("twilio");
 
@@ -600,12 +612,11 @@ app.post("/msg", authenticationToken, async (req, res) => {
     .catch((error) => res.send(`Error sending message: ${error.message}`));
 });
 
-// Get bus_number with respect to stop_name
-app.get("/bus_names/:stop_name", authenticationToken, async (req, res) => {
-  const { stop_name } = req.params;
+// Get all bus_stops details
+app.get("/bus_stops/", authenticationToken, async (req, res) => {
   try {
     const getQuery = `
-        SELECT bus_number from bus_stops where stop_name='${stop_name}'
+        SELECT * from bus_stops
     `;
     const result = await db.all(getQuery);
     const obj = { susses: true, data: result };
