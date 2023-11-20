@@ -155,27 +155,18 @@ app.post("/users/", async (request, response) => {
 
 //Add new driver
 app.post("/driver/", async (request, response) => {
-  const {
-    driver_name,
-    phone_number,
-    location,
-    bus_id,
-    username,
-    password,
-  } = request.body;
+  const { driver_name, phone_number, username, password } = request.body;
   // const new_driver_id = uuidv4();
   const hashedPassword = await bcrypt.hash(password, 10);
   const selectUserQuery = `SELECT * FROM driver WHERE username = '${username}'`;
   const dbUser = await db.get(selectUserQuery);
   if (dbUser === undefined) {
     const createUserQuery = `
-     INSERT INTO driver (driver_name, phone_number, location, bus_id, username, password) 
+     INSERT INTO driver (driver_name, phone_number, username, password) 
       VALUES 
         (
           '${driver_name}', 
           '${phone_number}',
-          '${location}', 
-          '${bus_id}', 
           '${username}', 
           '${hashedPassword}'
         )`;

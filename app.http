@@ -17,12 +17,12 @@ post http://localhost:3020/driver/
 Content-Type: application/json
 
 {
-    "driver_name": "driver_16",
+    "driver_name": "driver_22",
     "phone_number": "1111111111",
-    "location": "p",
-    "bus_id": 18,
-    "username": "user16",
-    "password": "password16"
+    "username": "user22",
+    "password": "password22",
+    "latitute":0.0,
+    "longitute":0.0
   }
 
 ###
