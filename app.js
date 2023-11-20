@@ -588,7 +588,7 @@ app.get(
 const twilio = require("twilio");
 
 const accountSid = "ACcdf4b88477757704702eae17315fe68e";
-const authToken = "f704c58bf93efebba93d0540e95728fd";
+const authToken = "1629719d2fb5e5502830d7089321f1c1";
 
 const client = twilio(accountSid, authToken);
 
@@ -598,6 +598,17 @@ app.post("/msg", authenticationToken, async (req, res) => {
       body: "Hi! Bus Arrived at the previous STOP; Hurry Up! Reach Your Stop",
       from: "whatsapp:+14155238886",
       to: `whatsapp:+91${req.phone_number}`,
+    })
+    .then((message) => res.send(`Message sent with SID: ${message.sid}`))
+    .catch((error) => res.send(`Error sending message: ${error.message}`));
+});
+
+app.post("/sms", authenticationToken, async (req, res) => {
+  client.messages
+    .create({
+      body: "Hi! Bus Arrived at the previous STOP; Hurry Up! Reach Your Stop",
+      from: "+12402332725",
+      to: `+91${req.phone_number}`,
     })
     .then((message) => res.send(`Message sent with SID: ${message.sid}`))
     .catch((error) => res.send(`Error sending message: ${error.message}`));
