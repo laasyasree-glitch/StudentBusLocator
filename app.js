@@ -162,13 +162,13 @@ app.post("/driver/", async (request, response) => {
   const dbUser = await db.get(selectUserQuery);
   if (dbUser === undefined) {
     const createUserQuery = `
-     INSERT INTO driver (driver_name, phone_number, username, password) 
+     INSERT INTO driver (driver_id, driver_name, phone_number, username, password, latitute, longitute) 
       VALUES 
         (
           '${driver_name}', 
           '${phone_number}',
           '${username}', 
-          '${hashedPassword}'
+          '${hashedPassword}',${0},${0}
         )`;
     const dbResponse = await db.run(createUserQuery);
     response.send(`New driver has been created successfully`);
