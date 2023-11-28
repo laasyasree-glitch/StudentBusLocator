@@ -335,7 +335,7 @@ app.get("/drivers/", authenticationToken, async (req, res) => {
 
 //Update driver phone number
 app.put(
-  "/users/:user_id/phone_number",
+  "/driver/:driver_id/phone_number",
   authenticationToken,
   async (req, res) => {
     const { driver_id } = req.params; // Extract user_id from request parameters
@@ -588,7 +588,7 @@ app.get(
 const twilio = require("twilio");
 
 const accountSid = "ACcdf4b88477757704702eae17315fe68e";
-const authToken = "1629719d2fb5e5502830d7089321f1c1";
+const authToken = "f2b677ebde328b759e4acb9b690c267f";
 
 const client = twilio(accountSid, authToken);
 
